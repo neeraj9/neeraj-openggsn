@@ -417,7 +417,7 @@ int gtp_req(struct gsn_t *gsn, int version, struct pdp_t *pdp,
 #endif
 
   if ((packet->flags & 0xe0) == 0x00) { /* Version 0 */
-    addr.sin_port = htons(GTP0_PORT);
+    addr.sin_port = htons(gsn->remote_gtp0_port);
     packet->gtp0.h.length = hton16(len - GTP0_HEADER_SIZE);
     packet->gtp0.h.seq = hton16(gsn->seq_next);
     if (pdp)
@@ -431,7 +431,7 @@ int gtp_req(struct gsn_t *gsn, int version, struct pdp_t *pdp,
     fd = gsn->fd0;
   }
   else if ((packet->flags & 0xe2) == 0x22) { /* Version 1 with seq */
-    addr.sin_port = htons(GTP1C_PORT);
+    addr.sin_port = htons(gsn->remote_gtp1c_port);
     packet->gtp1l.h.length = hton16(len - GTP1_HEADER_SIZE_SHORT);
     packet->gtp1l.h.seq = hton16(gsn->seq_next);
     if (pdp && ((packet->gtp1l.h.type == GTP_GPDU) ||
@@ -626,9 +626,9 @@ int gtp_notification(struct gsn_t *gsn, int version,
      are requests for which there is no reply */
 
   if (fd == gsn->fd1c)
-    addr.sin_port = htons(GTP1C_PORT);
+    addr.sin_port = htons(gsn->remote_gtp1c_port);
   else if (fd == gsn->fd1u)
-    addr.sin_port = htons(GTP1C_PORT);
+    addr.sin_port = htons(gsn->remote_gtp1c_port);
 
   if ((packet->flags & 0xe0) == 0x00) { /* Version 0 */
     packet->gtp0.h.length = hton16(len - GTP0_HEADER_SIZE);
@@ -727,16 +727,23 @@ static void log_restart(struct gsn_t *gsn) {
 	}
 }
 
-
-
-int gtp_new(struct gsn_t **gsn, char *statedir, struct in_addr *listen,
-	    int mode) 
+int gtp_new_generic(struct gsn_t **gsn, char *statedir, struct in_addr *listen,
+	   	    int mode, int lgtp0port, int lgtp1cport, int lgtp1uport,
+		    int rgtp0port, int rgtp1cport, int rgtp1uport)
 {
   struct sockaddr_in addr;
   
   syslog(LOG_ERR, "GTP: gtp_newgsn() started");
 
   *gsn = calloc(sizeof(struct gsn_t), 1); /* TODO */
+
+  /* Set port numbers */
+  (*gsn)->local_gtp0_port = lgtp0port;
+  (*gsn)->local_gtp1c_port = lgtp1cport;
+  (*gsn)->local_gtp1u_port = lgtp1uport;
+  (*gsn)->remote_gtp0_port = rgtp0port;
+  (*gsn)->remote_gtp1c_port = rgtp1cport;
+  (*gsn)->remote_gtp1u_port = rgtp1uport;
 
   (*gsn)->statedir = statedir;
   log_restart(*gsn);
@@ -774,7 +781,7 @@ int gtp_new(struct gsn_t **gsn, char *statedir, struct in_addr *listen,
   memset(&addr, 0, sizeof(addr));
   addr.sin_family = AF_INET;
   addr.sin_addr = *listen;  /* Same IP for user traffic and signalling*/
-  addr.sin_port = htons(GTP0_PORT);
+  addr.sin_port = htons(lgtp0port);
 #if defined(__FreeBSD__) || defined(__APPLE__)
   addr.sin_len = sizeof(addr);
 #endif
@@ -795,7 +802,7 @@ int gtp_new(struct gsn_t **gsn, char *statedir, struct in_addr *listen,
   memset(&addr, 0, sizeof(addr));
   addr.sin_family = AF_INET;
   addr.sin_addr = *listen;  /* Same IP for user traffic and signalling*/
-  addr.sin_port = htons(GTP1C_PORT);
+  addr.sin_port = htons(lgtp1cport);
 #if defined(__FreeBSD__) || defined(__APPLE__)
   addr.sin_len = sizeof(addr);
 #endif
@@ -816,7 +823,7 @@ int gtp_new(struct gsn_t **gsn, char *statedir, struct in_addr *listen,
   memset(&addr, 0, sizeof(addr));
   addr.sin_family = AF_INET;
   addr.sin_addr = *listen;  /* Same IP for user traffic and signalling*/
-  addr.sin_port = htons(GTP1U_PORT);
+  addr.sin_port = htons(lgtp1uport);
 #if defined(__FreeBSD__) || defined(__APPLE__)
   addr.sin_len = sizeof(addr);
 #endif
@@ -828,6 +835,14 @@ int gtp_new(struct gsn_t **gsn, char *statedir, struct in_addr *listen,
   }
 
   return 0;
+}
+
+int gtp_new(struct gsn_t **gsn, char *statedir, struct in_addr *listen,
+	    int mode) 
+{
+	return gtp_new_generic(gsn, statedir, listen, mode,
+		GTP0_PORT, GTP1C_PORT, GTP1U_PORT,
+		GTP0_PORT, GTP1C_PORT, GTP1U_PORT);
 }
 
 int gtp_free(struct gsn_t *gsn) {
@@ -2998,7 +3013,7 @@ int gtp_data_req(struct gsn_t *gsn, struct pdp_t* pdp,
   if (pdp->version == 0) {
     
     length = GTP0_HEADER_SIZE+len;
-    addr.sin_port = htons(GTP0_PORT);
+    addr.sin_port = htons(gsn->remote_gtp0_port);
     fd = gsn->fd0;
     
     get_default_gtp(0, GTP_GPDU, &packet);
@@ -3019,7 +3034,7 @@ int gtp_data_req(struct gsn_t *gsn, struct pdp_t* pdp,
   else if (pdp->version == 1) {
     
     length = GTP1_HEADER_SIZE_LONG+len;
-    addr.sin_port = htons(GTP1U_PORT);
+    addr.sin_port = htons(gsn->remote_gtp1u_port);
     fd = gsn->fd1u;
 
     get_default_gtp(1, GTP_GPDU, &packet);

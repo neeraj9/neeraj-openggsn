@@ -242,6 +242,13 @@ struct gsn_t {
   struct in_addr gsnc;  /* IP address of this gsn for signalling */
   struct in_addr gsnu;  /* IP address of this gsn for user traffic */
 
+  int local_gtp0_port;    /* Local GTP0 port */
+  int local_gtp1c_port;   /* Local GTP1C port */
+  int local_gtp1u_port;   /* Local GTP1U port */
+  int remote_gtp0_port;  /* Remote GTP0 port */
+  int remote_gtp1c_port; /* Remote GTP1C port */
+  int remote_gtp1u_port; /* Remote GTP1U port */
+
   /* Parameters related to signalling messages */
   uint16_t seq_next;    /* Next sequence number to use */
   int seq_first;        /* First packet in queue (oldest timeout) */
@@ -291,6 +298,10 @@ struct gsn_t {
 /* External API functions */
 
 extern const char* gtp_version();
+extern int gtp_new_generic(struct gsn_t **gsn, char *statedir,
+			   struct in_addr *listen, int mode,
+			   int lgtp0port, int lgtp1cport, int lgtp1uport,
+			   int rgtp0port, int rgtp1cport, int rgtp1uport);
 extern int gtp_new(struct gsn_t **gsn, char *statedir, struct in_addr *listen,
 		   int mode);
 
