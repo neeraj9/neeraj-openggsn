@@ -44,6 +44,12 @@ const char *gengetopt_args_info_help[] = {
   "      --timelimit=INT    Exit after timelimit seconds  (default=`0')",
   "  -a, --apn=STRING       Access point name  (default=`internet')",
   "  -q, --qos=INT          Requested quality of service  (default=`0x0b921f')",
+  "      --lgtp0port=INT    Local GTP0 port (default='3386')",
+  "      --lgtp1cport=INT   Local GTP1C port (default='2123')",
+  "      --lgtp1uport=INT   Local GTP1U port (default='2152')",
+  "      --rgtp0port=INT    Remote GTP0 port (default='3386')",
+  "      --rgtp1cport=INT   Remote GTP1C port (default='2123')",
+  "      --rgtp1uport=INT   Remote GTP1U port (default='2152')",
     0
 };
 
@@ -102,6 +108,12 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->pcodns1_given = 0 ;
   args_info->pcodns2_given = 0 ;
   args_info->timelimit_given = 0 ;
+  args_info->lgtp0port_given = 0;
+  args_info->lgtp1cport_given = 0;
+  args_info->lgtp1uport_given = 0;
+  args_info->rgtp0port_given = 0;
+  args_info->rgtp1cport_given = 0;
+  args_info->rgtp1uport_given = 0;
   args_info->apn_given = 0 ;
   args_info->qos_given = 0 ;
 }
@@ -135,6 +147,18 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->pcodns2_orig = NULL;
   args_info->timelimit_arg = 0;
   args_info->timelimit_orig = NULL;
+  args_info->lgtp0port_arg = 3386;
+  args_info->lgtp1cport_arg = 2123;
+  args_info->lgtp1uport_arg = 2152;
+  args_info->rgtp0port_arg = 3386;
+  args_info->rgtp1cport_arg = 2123;
+  args_info->rgtp1uport_arg = 2152;
+  args_info->lgtp0port_orig = NULL;
+  args_info->lgtp1cport_orig = NULL;
+  args_info->lgtp1uport_orig = NULL;
+  args_info->rgtp0port_orig = NULL;
+  args_info->rgtp1cport_orig = NULL;
+  args_info->rgtp1uport_orig = NULL;
   args_info->apn_arg = gengetopt_strdup ("internet");
   args_info->apn_orig = NULL;
   args_info->qos_arg = 0x0b921f;
@@ -313,6 +337,36 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
       free (args_info->timelimit_orig); /* free previous argument */
       args_info->timelimit_orig = 0;
     }
+  if (args_info->lgtp0port_orig)
+    {
+      free (args_info->lgtp0port_orig); /* free previous argument */
+      args_info->lgtp0port_orig = 0;
+    }
+  if (args_info->lgtp1cport_orig)
+    {
+      free (args_info->lgtp1cport_orig); /* free previous argument */
+      args_info->lgtp1cport_orig = 0;
+    }
+  if (args_info->lgtp1uport_orig)
+    {
+      free (args_info->lgtp1uport_orig); /* free previous argument */
+      args_info->lgtp1uport_orig = 0;
+    }
+  if (args_info->rgtp0port_orig)
+    {
+      free (args_info->rgtp0port_orig); /* free previous argument */
+      args_info->rgtp0port_orig = 0;
+    }
+  if (args_info->rgtp1cport_orig)
+    {
+      free (args_info->rgtp1cport_orig); /* free previous argument */
+      args_info->rgtp1cport_orig = 0;
+    }
+  if (args_info->rgtp1uport_orig)
+    {
+      free (args_info->rgtp1uport_orig); /* free previous argument */
+      args_info->rgtp1uport_orig = 0;
+    }
   if (args_info->apn_arg)
     {
       free (args_info->apn_arg); /* free previous argument */
@@ -442,6 +496,48 @@ cmdline_parser_file_save(const char *filename, struct gengetopt_args_info *args_
       fprintf(outfile, "%s\n", "timelimit");
     }
   }
+  if (args_info->lgtp0port_given) {
+    if (args_info->lgtp0port_orig) {
+      fprintf(outfile, "%s=\"%s\"\n", "lgtp0port", args_info->lgtp0port_orig);
+    } else {
+      fprintf(outfile, "%s\n", "lgtp0port");
+    }
+  }
+  if (args_info->lgtp1cport_given) {
+    if (args_info->lgtp1cport_orig) {
+      fprintf(outfile, "%s=\"%s\"\n", "lgtp1cport", args_info->lgtp1cport_orig);
+    } else {
+      fprintf(outfile, "%s\n", "lgtp1cport");
+    }
+  }
+  if (args_info->lgtp1uport_given) {
+    if (args_info->lgtp1uport_orig) {
+      fprintf(outfile, "%s=\"%s\"\n", "lgtp1uport", args_info->lgtp1uport_orig);
+    } else {
+      fprintf(outfile, "%s\n", "lgtp1uport");
+    }
+  }
+  if (args_info->rgtp0port_given) {
+    if (args_info->rgtp0port_orig) {
+      fprintf(outfile, "%s=\"%s\"\n", "rgtp0port", args_info->rgtp0port_orig);
+    } else {
+      fprintf(outfile, "%s\n", "rgtp0port");
+    }
+  }
+  if (args_info->rgtp1cport_given) {
+    if (args_info->rgtp1cport_orig) {
+      fprintf(outfile, "%s=\"%s\"\n", "rgtp1cport", args_info->rgtp1cport_orig);
+    } else {
+      fprintf(outfile, "%s\n", "rgtp1cport");
+    }
+  }
+  if (args_info->rgtp1uport_given) {
+    if (args_info->rgtp1uport_orig) {
+      fprintf(outfile, "%s=\"%s\"\n", "rgtp1uport", args_info->rgtp1uport_orig);
+    } else {
+      fprintf(outfile, "%s\n", "rgtp1uport");
+    }
+  }
   if (args_info->apn_given) {
     if (args_info->apn_orig) {
       fprintf(outfile, "%s=\"%s\"\n", "apn", args_info->apn_orig);
@@ -556,6 +652,12 @@ cmdline_parser_internal (int argc, char * const *argv, struct gengetopt_args_inf
         { "timelimit",	1, NULL, 0 },
         { "apn",	1, NULL, 'a' },
         { "qos",	1, NULL, 'q' },
+        { "lgtp0port",  1, NULL, 0 },
+        { "lgtp1cport",  1, NULL, 0 },
+        { "lgtp1uport",  1, NULL, 0 },
+        { "rgtp0port",  1, NULL, 0 },
+        { "rgtp1cport",  1, NULL, 0 },
+        { "rgtp1uport",  1, NULL, 0 },
         { NULL,	0, NULL, 0 }
       };
 
@@ -869,7 +971,126 @@ cmdline_parser_internal (int argc, char * const *argv, struct gengetopt_args_inf
               free (args_info->timelimit_orig); /* free previous string */
             args_info->timelimit_orig = gengetopt_strdup (optarg);
           }
-          
+          else if (strcmp (long_options[option_index].name, "lgtp0port") == 0)
+          {
+            if (local_args_info.lgtp0port_given)
+              {
+                fprintf (stderr, "%s: `--lgtp0port' option given more than once%s\n", argv[0], (additional_error ? additional_error : ""));
+                goto failure;
+              }
+            if (args_info->lgtp0port_given && ! override)
+              continue;
+            local_args_info.lgtp0port_given = 1;
+            args_info->lgtp0port_given = 1;
+            args_info->lgtp0port_arg = strtol (optarg, &stop_char, 0);
+            if (!(stop_char && *stop_char == '\0')) {
+              fprintf(stderr, "%s: invalid numeric value: %s\n", argv[0], optarg);
+              goto failure;
+            }
+            if (args_info->lgtp0port_orig)
+              free (args_info->lgtp0port_orig); /* free previous string */
+            args_info->lgtp0port_orig = gengetopt_strdup (optarg);
+          }
+          else if (strcmp (long_options[option_index].name, "lgtp1cport") == 0)
+          {
+            if (local_args_info.lgtp1cport_given)
+              {
+                fprintf (stderr, "%s: `--lgtp1cport' option given more than once%s\n", argv[0], (additional_error ? additional_error : ""));
+                goto failure;
+              }
+            if (args_info->lgtp1cport_given && ! override)
+              continue;
+            local_args_info.lgtp1cport_given = 1;
+            args_info->lgtp1cport_given = 1;
+            args_info->lgtp1cport_arg = strtol (optarg, &stop_char, 0);
+            if (!(stop_char && *stop_char == '\0')) {
+              fprintf(stderr, "%s: invalid numeric value: %s\n", argv[0], optarg);
+              goto failure;
+            }
+            if (args_info->lgtp1cport_orig)
+              free (args_info->lgtp1cport_orig); /* free previous string */
+            args_info->lgtp1cport_orig = gengetopt_strdup (optarg);
+          }
+          else if (strcmp (long_options[option_index].name, "lgtp1uport") == 0)
+          {
+            if (local_args_info.lgtp1uport_given)
+              {
+                fprintf (stderr, "%s: `--lgtp1uport' option given more than once%s\n", argv[0], (additional_error ? additional_error : ""));
+                goto failure;
+              }
+            if (args_info->lgtp1uport_given && ! override)
+              continue;
+            local_args_info.lgtp1uport_given = 1;
+            args_info->lgtp1uport_given = 1;
+            args_info->lgtp1uport_arg = strtol (optarg, &stop_char, 0);
+            if (!(stop_char && *stop_char == '\0')) {
+              fprintf(stderr, "%s: invalid numeric value: %s\n", argv[0], optarg);
+              goto failure;
+            }
+            if (args_info->lgtp1uport_orig)
+              free (args_info->lgtp1uport_orig); /* free previous string */
+            args_info->lgtp1uport_orig = gengetopt_strdup (optarg);
+          }
+          else if (strcmp (long_options[option_index].name, "rgtp0port") == 0)
+          {
+            if (local_args_info.rgtp0port_given)
+              {
+                fprintf (stderr, "%s: `--rgtp0port' option given more than once%s\n", argv[0], (additional_error ? additional_error : ""));
+                goto failure;
+              }
+            if (args_info->rgtp0port_given && ! override)
+              continue;
+            local_args_info.rgtp0port_given = 1;
+            args_info->rgtp0port_given = 1;
+            args_info->rgtp0port_arg = strtol (optarg, &stop_char, 0);
+            if (!(stop_char && *stop_char == '\0')) {
+              fprintf(stderr, "%s: invalid numeric value: %s\n", argv[0], optarg);
+              goto failure;
+            }
+            if (args_info->rgtp0port_orig)
+              free (args_info->rgtp0port_orig); /* free previous string */
+            args_info->rgtp0port_orig = gengetopt_strdup (optarg);
+          }
+          else if (strcmp (long_options[option_index].name, "rgtp1cport") == 0)
+          {
+            if (local_args_info.rgtp1cport_given)
+              {
+                fprintf (stderr, "%s: `--rgtp1cport' option given more than once%s\n", argv[0], (additional_error ? additional_error : ""));
+                goto failure;
+              }
+            if (args_info->rgtp1cport_given && ! override)
+              continue;
+            local_args_info.rgtp1cport_given = 1;
+            args_info->rgtp1cport_given = 1;
+            args_info->rgtp1cport_arg = strtol (optarg, &stop_char, 0);
+            if (!(stop_char && *stop_char == '\0')) {
+              fprintf(stderr, "%s: invalid numeric value: %s\n", argv[0], optarg);
+              goto failure;
+            }
+            if (args_info->rgtp1cport_orig)
+              free (args_info->rgtp1cport_orig); /* free previous string */
+            args_info->rgtp1cport_orig = gengetopt_strdup (optarg);
+          }
+          else if (strcmp (long_options[option_index].name, "rgtp1uport") == 0)
+          {
+            if (local_args_info.rgtp1uport_given)
+              {
+                fprintf (stderr, "%s: `--rgtp1uport' option given more than once%s\n", argv[0], (additional_error ? additional_error : ""));
+                goto failure;
+              }
+            if (args_info->rgtp1uport_given && ! override)
+              continue;
+            local_args_info.rgtp1uport_given = 1;
+            args_info->rgtp1uport_given = 1;
+            args_info->rgtp1uport_arg = strtol (optarg, &stop_char, 0);
+            if (!(stop_char && *stop_char == '\0')) {
+              fprintf(stderr, "%s: invalid numeric value: %s\n", argv[0], optarg);
+              goto failure;
+            }
+            if (args_info->rgtp1uport_orig)
+              free (args_info->rgtp1uport_orig); /* free previous string */
+            args_info->rgtp1uport_orig = gengetopt_strdup (optarg);
+          }
           break;
         case '?':	/* Invalid option.  */
           /* `getopt_long' already printed an error message.  */

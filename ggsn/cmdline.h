@@ -64,8 +64,26 @@ struct gengetopt_args_info
   char * pcodns2_orig;	/* PCO DNS Server 2 original value given at command line.  */
   const char *pcodns2_help; /* PCO DNS Server 2 help description.  */
   int timelimit_arg;	/* Exit after timelimit seconds (default='0').  */
+  int lgtp0port_arg;	/* Local GTP0 port (default='3386') */
+  int lgtp1cport_arg;	/* Local GTP1C port (default='2123') */
+  int lgtp1uport_arg;	/* Local GTP1U port (default='2123') */
+  int rgtp0port_arg;	/* Remote GTP0 port (default='3386') */
+  int rgtp1cport_arg;	/* Remote GTP1C port (default='2123') */
+  int rgtp1uport_arg;	/* Remote GTP1U port (default='2123') */
   char * timelimit_orig;	/* Exit after timelimit seconds original value given at command line.  */
+  char * lgtp0port_orig;	/* Local GTP0 port original value given at command line */
+  char * lgtp1cport_orig;	/* Local GTP1C port original value given at command line */
+  char * lgtp1uport_orig;	/* Local GTP1U port original value given at command line */
+  char * rgtp0port_orig;	/* Remote GTP0 port original value given at command line */
+  char * rgtp1cport_orig;	/* Remote GTP1C port original value given at command line */
+  char * rgtp1uport_orig;	/* Remote GTP1U port original value given at command line */
   const char *timelimit_help; /* Exit after timelimit seconds help description.  */
+  const char *lgtp0port_help; /* Local GTP0 port help description.  */
+  const char *lgtp1cport_help; /* Local GTP1C port help description.  */
+  const char *lgtp1uport_help; /* Local GTP1U port help description.  */
+  const char *rgtp0port_help; /* Remote GTP0 port help description.  */
+  const char *rgtp1cport_help; /* Remote GTP1C port help description.  */
+  const char *rgtp1uport_help; /* Remote GTP1U port help description.  */
   char * apn_arg;	/* Access point name (default='internet').  */
   char * apn_orig;	/* Access point name original value given at command line.  */
   const char *apn_help; /* Access point name help description.  */
@@ -89,6 +107,12 @@ struct gengetopt_args_info
   int pcodns1_given ;	/* Whether pcodns1 was given.  */
   int pcodns2_given ;	/* Whether pcodns2 was given.  */
   int timelimit_given ;	/* Whether timelimit was given.  */
+  int lgtp0port_given ;	/* Whether lgtp0port was given.  */
+  int lgtp1cport_given ;/* Whether lgtp1cport was given.  */
+  int lgtp1uport_given ;/* Whether lgtp1uport was given.  */
+  int rgtp0port_given ;	/* Whether rgtp0port was given.  */
+  int rgtp1cport_given ;/* Whether rgtp1cport was given.  */
+  int rgtp1uport_given ;/* Whether rgtp1uport was given.  */
   int apn_given ;	/* Whether apn was given.  */
   int qos_given ;	/* Whether qos was given.  */
 

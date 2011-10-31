@@ -468,7 +468,9 @@ int main(int argc, char **argv)
 
   if (debug) printf("gtpclient: Initialising GTP tunnel\n");
   
-  if (gtp_new(&gsn, args_info.statedir_arg,  &listen_, GTP_MODE_GGSN)) {
+  if (gtp_new_generic(&gsn, args_info.statedir_arg,  &listen_, GTP_MODE_GGSN,
+                      args_info.lgtp0port_arg, args_info.lgtp1cport_arg, args_info.lgtp1uport_arg,
+                      args_info.rgtp0port_arg, args_info.rgtp1cport_arg, args_info.rgtp1uport_arg)) {
     sys_err(LOG_ERR, __FILE__, __LINE__, 0,
 	    "Failed to create gtp");
     exit(1);
